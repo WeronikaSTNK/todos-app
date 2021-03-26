@@ -3,7 +3,7 @@
     <b-navbar type="dark" variant="info">
       <b-navbar-brand href="/">Todo's</b-navbar-brand>
       <div class="navbar p-1 w-100 d-flex justify-content-center">
-      <router-link to="/" class="m-2">Lista zadań</router-link> |
+      <router-link to="/" class="m-2">Moje zadania</router-link> |
       <router-link to="/about" class="m-2">O mnie</router-link>
       </div>
     </b-navbar>
@@ -12,17 +12,16 @@
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-a{
+
+.router-links, .router-links-active {
   text-decoration: none;
-  color: white
+  color: white;
+  &:hover{
+    color: white;
+    text-decoration: none;
+  }
 }
+
 .navbar{
   color: white;
 }
