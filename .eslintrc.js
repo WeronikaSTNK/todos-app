@@ -5,20 +5,15 @@ module.exports = {
   },
   extends: [
     'plugin:vue/recommended',
-    '@vue/airbnb',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'max-len': [0],
-    'import/no-extraneous-dependencies': ['error', {
-      'optionalDependencies': ['test/unit/index.js']
-    }],
     'import/no-unresolved': 'off',
     'no-unused-expressions': ['error', { 'allowTernary': true }],
     'no-param-reassign': 0,
     'quote-props': ['error', 'consistent'],
-    // vue rules
     "vue/order-in-components": ["error", {
       "order": [
         "el",
@@ -54,13 +49,6 @@ module.exports = {
       'baseIndent': 0,
       'switchCase': 1,
       'ignores': []
-    }],
-    'vue/max-attributes-per-line': [2, {
-      'singleline': 1,
-      'multiline': {
-        'max': 1,
-        'allowFirstLine': false
-      }
     }],
   },
   parserOptions: {
