@@ -12,8 +12,12 @@
         <span class="badge badge-info p-2"
           >Wszystkie zadania: {{ getTasks.length || 0 }}
         </span>
-        <span class="badge badge-success p-2">Zakończone: </span>
-        <span class="badge badge-warning p-2"> W trakcie: </span>
+        <span class="badge badge-success p-2"
+          >Zakończone: {{ completedTasks.length }}</span
+        >
+        <span class="badge badge-warning p-2">
+          W trakcie: {{ incompletedTasks.length }}</span
+        >
       </div>
     </b-card>
     <div class="mt-3">
@@ -23,25 +27,28 @@
           v-for="(task, key) in allTasks"
           :key="key"
           class="d-flex p-1 flex-row align-items-center justify-content-between todo-item m-2"
+          :class="task.completed ? 'done' : 'undone'"
         >
-          <span class="todo-item__title">{{ task.title }} </span>
-          <span class="todo-item__date">{{ task.createdDate }} </span>
-          <span class="todo-item__priority">{{ task.priority }} pilne</span>
-          <div class="todo-item__buttons-actions d-flex align-items-center">
+          <span class="todo-title">{{ task.title }} </span>
+          <span class="todo-date">{{ task.createdDate }} </span>
+          <div class="todo-buttons-actions d-flex align-items-center">
             <b-button
+            v-b-tooltip.hover title="Zakończ zadanie"
               class="mr-5"
               size="sm"
               variant="success"
+              @click.stop="completeTask(key)"
               ><b-icon icon="check-square"></b-icon
             ></b-button>
             <b-button class="ml-2 mr-2" size="sm"> Edytuj</b-button>
             <b-button
+              v-b-tooltip.hover title="Usuń zadanie"
               variant="danger"
               class="ml-2 mr-2"
               size="sm"
               @click.stop="removeTask(key)"
             >
-              Usuń
+              <b-icon icon="trash"></b-icon>
             </b-button>
           </div>
         </li>
@@ -59,20 +66,26 @@ export default {
   components: {
     Input,
   },
-  data: function() {
+  data: function () {
     return {
       title: "TODO-LIST",
       completedTasks: 0,
+      incompletedTasks: 0,
     };
   },
   methods: {
     ...mapActions(["deleteTask", "setAsCompleted"]),
-    // completeTask(key) {
-    //   this.setAsCompleted(key)
-    // },
+    completeTask(key) {
+      this.setAsCompleted(key);
+      this.updateTask();
+    },
     removeTask(key) {
       this.deleteTask(key);
-      // this.updateTasks()
+      this.updateTask();
+    },
+    updateTask() {
+      this.completedTasks = this.getTasks.filter((task) => task.completed);
+      this.incompletedTasks = this.getTasks.filter((task) => !task.completed);
     },
   },
   computed: {
@@ -94,15 +107,15 @@ export default {
     list-style: none;
   }
   .todo-list {
-    margin: 2rem auto;
-    padding: 1rem 2rem 3rem;
+    padding: 1rem 0 3rem;
     overflow: visible;
   }
   .todo-list li.todo-item:hover {
     background-color: #e0e0e0;
     cursor: pointer;
   }
-  .todo-item {
+  .todo-list .done {
+    opacity: 0.5;
   }
 }
 </style>

@@ -5,9 +5,14 @@
       type="text"
       placeholder="Dodaj nowe zadanie"
       v-on:keydown.enter="addNewTask($event)"
-      v-model="newTaskText"
+      v-model.trim="newTaskText"
     ></b-form-input>
-    <b-button variant="outline-info" class="ml-3" @click="addNewTask($event)">
+    <b-button
+      variant="outline-info"
+      class="ml-3"
+      @click="addNewTask($event)"
+      aria-hidden="true"
+    >
       Dodaj
     </b-button>
   </b-input-group-prepend>
@@ -19,18 +24,19 @@ import moment from "moment";
 export default {
   methods: {
     ...mapActions(["createNewTask"]),
-    addNewTask() {
-      //  e.preventDefault();
-      let task = {
-        id: v1(),
-        title: this.newTaskText,
-        description: null,
-        completed: false,
-        createdDate: moment().format("MMM D"),
-        priority: null,
-      };
-      this.createNewTask(task);
-      this.newTaskText = "";
+    addNewTask(e) {
+      if (this.newTaskText.length > 0) {
+        e.preventDefault();
+        let task = {
+          id: v1(),
+          title: this.newTaskText,
+          description: null,
+          completed: false,
+          createdDate: moment().format("MMM D"),
+        };
+        this.createNewTask(task);
+        this.newTaskText = ""
+      }
     },
   },
   name: "Input",
