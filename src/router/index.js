@@ -1,26 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import TodosList from '../views/TodosList.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Moje zadania',
-    component: TodosList
+    name: 'todosList',
+    component: () => import('../views/TodosList.vue')
   },
   {
-    path: '/about',
-    name: 'About',
-    component: () => import('../views/About.vue')
+    path: '/task/:id?',
+    name: "taskDetails",
+    component: () => import('../views/TaskDetails.vue')
   }
 ]
 
 const router = new VueRouter({
   routes,
-  linkExactActiveClass: "router-links",
-  linkActiveClass: 'router-links-active'
 })
 
 export default router
