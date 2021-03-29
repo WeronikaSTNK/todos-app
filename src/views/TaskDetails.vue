@@ -1,8 +1,28 @@
 <template>
-  <b-container class="container bg-light card mt-5 pt-3">
+  <b-container class="container bg-light card mt-5 p-4">
+    <a
+      href="/"
+      class="go-back-btn">
+      <b-icon
+        icon="arrow-left"
+        class="mr-2" />Wróć do listy zadań
+    </a>
     <b-form
       @submit="saveTask"
       @reset="deleteTask">
+      <div class="d-flex justify-content-end">
+        <b-button
+          type="reset"
+          pill
+          variant="danger"
+          class="mr-2 ml-2">
+          <b-icon
+            v-b-tooltip.hover
+            title="Usuń zadanie"
+            icon="trash"
+            size="lg" />
+        </b-button>
+      </div>
       <b-form-group
         id="title-group"
         label="Tytuł:"
@@ -31,8 +51,10 @@
         label="Termin wykonania:"
         label-for="deadline">
         <b-form-datepicker
-          id="deadline"
-          v-model="task.deadline"
+          id="datepicker-placeholder"
+          v-model="task.deadline" 
+          placeholder="Wybierz ostateczny termin wykonania"
+          locale="pl"
           class="mb-2" />
       </b-form-group>
 
@@ -57,44 +79,46 @@
           :options="priorities"
           required />
       </b-form-group>
-
-      <div class="row d-flex justify-content-between ml-3 mr-3 mt-5">
+      <div class="row d-flex justify-content-center mt-5">
         <b-button
           type="submit"
           pill
-          variant="primary"
-          class="">
+          variant="info">
           Zapisz zadanie
-        </b-button>
-        <b-button
-          type="reset"
-          pill
-          variant="danger"
-          class="mr-2 ml-2">
-          <b-icon
-            v-b-tooltip.hover
-            title="Usuń zadanie"
-            icon="trash"
-            size="lg" />
         </b-button>
       </div>
     </b-form>
-
-    <b-form-group
-      id="comments-group"
-      label="Komentarze:"
-      label-for="comments">
-      <div
-        v-for="comment in getComments"
-        :key="comment.id">
-        <p>{{ comment.date }}</p>
-        <p>{{ comment.text }}</p>
-      </div>
-      <b-form-input
+    <div
+      class="d-flex 
+      justify-content-center 
+      align-items-center
+      flex-column 
+      align-content-center 
+      mt-5
+      mb-5">
+      <h5> Komentarze</h5>
+      <b-input
         id="comment"
         v-model="newComment"
+        autocomplete="off"
+        placeholder="Pamiętaj o..."
+        class="w-50"
         @keydown.enter="addComment()" />
-    </b-form-group>
+      <b-card
+        id="comments-group"
+        label-for="comments"
+        class="mt-5 w-50">
+        <div
+          v-for="comment in getComments"
+          :key="comment.id"
+          class="single-comment">
+          <p>Dodano: {{ comment.date }}</p>
+          <p class="pb-2">
+            {{ comment.text }}
+          </p>
+        </div>
+      </b-card>
+    </div>
   </b-container>
 </template>
 
@@ -103,19 +127,22 @@ import { v1 } from "uuid";
 import moment from "moment";
 import { mapGetters } from "vuex";
 
+moment.locale('pl')
+
 export default {
   data() {
     return {
       task: this.getTask(),
       priorities: this.$store.state.priorities,
-      newComment: null
+      newComment: null,
+      modalShow: false
     };
   },
 
   computed: {
     ...mapGetters(["getCommentsByTaskId"]),
     getComments() {
-      return this.getCommentsByTaskId(this.$route.params.id);
+      return this.getCommentsByTaskId(this.task.id);
     },
   },
 
@@ -136,7 +163,6 @@ export default {
     },
 
     saveTask(event) {
-      console.log('save task')
       event.preventDefault();
       if (this.isNewTask()) {
         this.$store.dispatch("createNewTask", this.task);
@@ -161,16 +187,16 @@ export default {
       if (!this.newComment || !this.newComment.length || this.newComment.length < 1) {
         return
       }
-
-      console.log("add coment")
+    
       const comment = {
         id: v1(),
         taskId: this.task.id,
-        date: moment().format("MMM D"),
+        date: moment().format("LLL"),
         text: this.newComment
       }
 
       this.$store.dispatch("addComment", comment)
+      this.newComment = ""
     }
   },
 };
@@ -178,5 +204,16 @@ export default {
 <style lang="scss">
 label {
 font-size: 0.9em;
+}
+.single-comment :first-child {
+  font-size: 0.8em;
+  opacity: 0.8
+}
+.go-back-btn{
+text-decoration: none;
+color: inherit;
+padding: 5px;
+color: #0d8ca0;
+font-weight: bold;
 }
 </style>

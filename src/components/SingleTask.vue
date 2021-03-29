@@ -1,42 +1,46 @@
 <template>
-  <div
-    class="d-flex p-2 flex-row align-items-center justify-content-between m-2 todo-wrapper"
-    :class="completed ? 'done' : 'undone'">
-    <b-icon
-      v-b-tooltip="'Zakończ zadanie!'"
-      :variant="completed ? 'success' : 'secondary'"
-      :icon="completed ? 'check-square' : 'square'"
-      @click="changeCompletionStatus()" />
-    <router-link
-      :to="'/task/' + id"
-      style="text-decoration: none"
-      class="d-flex justify-content-between w-100 todo-item pr-2 pl-3">
-      <span
-        v-b-tooltip.hover
-        class="todo-title"
-        title="Przejdź do szczegółów">{{ title }}
-      </span>
-      <span class="todo-deadline">{{ deadline }} </span>
-      <span class="todo-piority"> {{ getPriorityText() }} priorytet </span>
-      <b-badge
-        variant="primary"
-        class="comments-badge">
-        <span> {{ getCommentsNumber || 0 }}</span>
-        <b-icon
-          font-scale="1.5"
-          icon="chat-text"
-          class="ml-5" />
-      </b-badge>
-    </router-link>
-    <div class="todo-buttons-actions d-flex align-items-center ml-3">
+  <b-container>
+    <div
+      class="todo-wrapper m-2 row"
+      :class="completed ? 'done' : 'undone'">
       <b-icon
-        v-b-tooltip="'Usuń zadanie!'"
-        font-scale="1.5"
-        icon="trash"
-        class="ml-5"
-        @click="removeTask()" />
+        v-b-tooltip="'Zakończ zadanie!'"
+        :variant="completed ? 'success' : 'secondary'"
+        :icon="completed ? 'check-square' : 'square'"
+        @click="changeCompletionStatus()" />
+      <router-link
+        :to="'/task/' + id"
+        style="text-decoration: none; color:inherit"
+        class="todo-item d-flex justify-content-between align-items-center col-sm">
+        <span
+          v-b-tooltip.hover
+          class="col-5"
+          title="Przejdź do szczegółów">{{ title }}
+        </span>
+        <span class="col">{{ deadline }} </span>
+        <span class="col"> {{ getPriorityText() }} priorytet </span>
+        <div class="comments col col-lg-2 ">
+          <b-icon
+            font-scale="1.5"
+            icon="chat-text"
+            class="comments__icon " />
+          <b-badge
+            variant="warning"
+            class="comments__badge">
+            <span class="dot"> {{ getCommentsNumber || 0 }}</span>
+          </b-badge>
+        </div>
+      </router-link>
+      <div class="todo-buttons-actions d-flex align-items-center ml-3 ">
+        <b-icon
+          v-b-tooltip="'Usuń zadanie!'"
+          font-scale="1.5"
+          icon="trash"
+          style="color:red"
+          @click="removeTask()" />
+      </div>
     </div>
-  </div>
+  </b-container>
 </template>
 
 <script>
@@ -79,33 +83,32 @@ export default {
 </script>
 
 <style lang="scss">
+.todo-wrapper {
+    padding: .5rem 1rem;
+    align-items: center;
+    text-align: left;
+    &:hover {
+      background-color: #e7e7e7;
+      cursor: pointer;
+}}
+
 .todo-item {
   color: #4d4d4d;
   text-decoration: none;
-  font-size: 1em;
-  flex: 1 30%;
-  & .todo-piority {
-    font-size: 1em;
-    display: flex;
-    align-items: center;
-  }
-  & .todo-deadline {
-    font-size: 1em;
-    display: flex;
-    align-items: left;
-  }
 }
-.todo-wrapper:hover {
-  text-decoration: none;
-  background-color: #e0e0e0;
-  cursor: pointer;
-  color: #4d4d4d;
-}
-.done {
+  .done {
   opacity: 0.7;
+  text-decoration: line-through;
 }
-// .comments-badge {
-//   border-radius: 50%;
-//   padding: 5px
-// }
+.comments {
+  &__icon {
+    position: absolute
+  }
+  &__badge {
+    position: relative;
+    left: 15px;
+    top: -15px;
+    border-radius: 50%; }
+}
+
 </style>

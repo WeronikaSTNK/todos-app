@@ -1,9 +1,9 @@
 <template>
-  <b-container class="container bg-light card mt-5">
+  <b-container class="bg-light shadow shadow-lg--hover card mt-5 h-auto">
     <div
       v-if="isEmpty"
       class="row bg-light pt-1 rounded-0 d-flex d-flex flex-column align-content-center align-items-center">
-      <span class="badge badge-secondary p-2 mb-3">Twoja lista zadań jest pusta</span>
+      <span class="badge badge-secondary p-2 mt-5 mb-3">Twoja lista zadań jest pusta</span>
       <router-link to="/task/">
         <b-button
           variant="outline-info"
@@ -16,24 +16,24 @@
       v-else
       class="row bg-light d-flex flex-column align-items-center pt-4 pb-4">
       <div class="d-flex justify-content-around w-50 mb-4 mt-3">
-        <span class="badge badge-info p-2 mr-2">Wszystkie zadania: {{ allTasks.length || 0 }}</span>
-        <span class="badge badge-primary p-2 mr-2">W trakcie: {{ pendingTasks.length || 0 }}</span>
+        <span class="badge badge-info p-2">Wszystkie zadania: {{ allTasks.length || 0 }}</span>
+        <span class="badge badge-primary p-2">W trakcie: {{ pendingTasks.length || 0 }}</span>
         <span class="badge badge-success p-2">Zakończone: {{ completedTasks.length || 0 }}</span>
       </div>
       <router-link to="/task/">
         <b-button
-          variant="outline-danger"
-          class="ml-3"
+          variant="outline-info"
           aria-hidden="true">
           Dodaj nowe zadanie
         </b-button>
       </router-link>
     </div>
-    <div class="mt-3">
+    <div class="pt-3 pb-4">
       <SingleTask
         v-for="task in allTasks"
         :key="task.id"
-        v-bind="task" />
+        v-bind="task"
+        class="flex-9-cols " />
     </div>
   </b-container>
 </template>ś
@@ -78,6 +78,8 @@ export default {
   }
   .todo-list .done {
     opacity: 0.5;
+    text-decoration: line-through
+
   }
   .badge {
     color:white;
@@ -85,5 +87,30 @@ export default {
     font-weight: 500;
   width:auto
   }
+}@mixin flex-grid-items($cols) {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    $item-width: 100% / $cols;
+    width: $item-width;
+    box-sizing: border-box;
+  }
 }
+
+@mixin flex-grid-items($cols) {
+  display: flex;
+  flex-wrap: wrap;
+
+  > * {
+    $item-width: 100% / $cols;
+    width: $item-width;
+    box-sizing: border-box;
+  }
+}
+.flex-9-cols {
+  @include flex-grid-items(1)
+}
+
+
 </style>
