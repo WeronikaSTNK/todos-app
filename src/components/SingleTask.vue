@@ -1,42 +1,46 @@
 <template>
   <div
-    class="d-flex p-1 flex-row align-items-center justify-content-between m-2"
-  >
-  <router-link :to="'/task/'+ id"
-    v-b-tooltip.hover
-    title="Przejdź do szczegółów" 
-    style="text-decoration: none; color: inherit;"
-    class="d-flex justify-content-between w-100 todo-item"
-  >
-    <span class="todo-title">{{ title }} </span>
-    <span class="todo-date">{{ deadline }} </span>
-    <span> {{getPriorityText()}} </span>
-  </router-link>
+    class="d-flex p-2 flex-row align-items-center justify-content-between m-2 todo-wrapper"
+    :class="completed ? 'done' : 'undone'">
+    <b-icon
+      v-b-tooltip="'Zakończ zadanie!'"
+      :variant="completed ? 'success' : 'secondary'"
+      :icon="completed ? 'check-square' : 'square'"
+      @click="changeCompletionStatus()" />
+    <router-link
+      :to="'/task/' + id"
+      style="text-decoration: none"
+      class="d-flex justify-content-between w-100 todo-item pr-2 pl-3">
+      <span
+        v-b-tooltip.hover
+        class="todo-title"
+        title="Przejdź do szczegółów">{{ title }}
+      </span>
+      <span class="todo-deadline">{{ deadline }} </span>
+      <span class="todo-piority"> {{ getPriorityText() }} priorytet </span>
+      <b-badge
+        variant="primary"
+        class="comments-badge">
+        <span> {{ getCommentsNumber || 0 }}</span>
+        <b-icon
+          font-scale="1.5"
+          icon="chat-text"
+          class="ml-5" />
+      </b-badge>
+    </router-link>
     <div class="todo-buttons-actions d-flex align-items-center ml-3">
-      <b-button
-        v-b-tooltip.hover
-        title="Zakończ zadanie"
-        class="mr-5"
-        size="sm"
-        :variant="completed ? 'success' : 'secondary'"
-        @click="changeCompletionStatus()"
-        ><b-icon :icon="completed ? 'check-square' : 'square'"></b-icon
-      ></b-button>
-      <b-button
-        v-b-tooltip.hover
-        title="Usuń zadanie"
-        variant="danger"
-        class="ml-2 mr-2"
-        size="sm"
-        @click="removeTask()"
-      >
-        <b-icon icon="trash"></b-icon>
-      </b-button>
+      <b-icon
+        v-b-tooltip="'Usuń zadanie!'"
+        font-scale="1.5"
+        icon="trash"
+        class="ml-5"
+        @click="removeTask()" />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 
 export default {
   name: "SingleTask",
@@ -45,36 +49,63 @@ export default {
     title: String,
     completed: Boolean,
     deadline: String,
-    priority: String
+    priority: String,
   },
   data() {
     return {
-        priorities: this.$store.state.priorities
+      priorities: this.$store.state.priorities,
+    };
+  },
+  computed: {
+    ...mapGetters(["getCommentsByTaskId"]),
+    getCommentsNumber() {
+      return this.getCommentsByTaskId(this.id).length;
     }
   },
   methods: {
     changeCompletionStatus() {
-      this.$store.dispatch('changeCompletionStatus', this.id)
+      this.$store.dispatch("changeCompletionStatus", this.id);
     },
     removeTask() {
-      this.$store.dispatch('deleteTask', this.id)
+      this.$store.dispatch("deleteTask", this.id);
     },
-    getPriorityText(){
-      return this.priorities.find(priority => priority.value === this.priority).text
-    }
+    getPriorityText() {
+      return this.priorities.find(
+        (priority) => priority.value === this.priority
+      ).text;
+    },
   },
 };
 </script>
 
-<style>
+<style lang="scss">
 .todo-item {
-color: rgb(44, 44, 44);
-text-decoration: none;
-font-size: 146x
+  color: #4d4d4d;
+  text-decoration: none;
+  font-size: 1em;
+  flex: 1 30%;
+  & .todo-piority {
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+  }
+  & .todo-deadline {
+    font-size: 1em;
+    display: flex;
+    align-items: left;
+  }
 }
-.todo-item:hover{
-text-decoration: none;
-background-color: #e0e0e0;
-cursor: pointer;
+.todo-wrapper:hover {
+  text-decoration: none;
+  background-color: #e0e0e0;
+  cursor: pointer;
+  color: #4d4d4d;
 }
+.done {
+  opacity: 0.7;
+}
+// .comments-badge {
+//   border-radius: 50%;
+//   padding: 5px
+// }
 </style>

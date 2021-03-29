@@ -13,7 +13,7 @@ export default new Vuex.Store({
         description: null, 
         deadline: "2021-03-29", 
         completed: true, 
-        priority: "Low" 
+        priority: "Low"
       },
       { 
         id: "bb635416-e38f-4d84-bace-4445bb22780g", 
@@ -21,16 +21,42 @@ export default new Vuex.Store({
         description: null, 
         deadline: "2021-03-31", 
         completed: false, 
-        priority: "High" 
+        priority: "High"
+      },
+      { 
+        id: "8105ec9e-498f-4c1b-b233-fcaa6bbe4357", 
+        title: "Podlac kwiatki", 
+        description: null, 
+        deadline: "2021-03-28", 
+        completed: false, 
+        priority: "High"
       },
     ],
     priorities: [
-      { value: "Lowest", text: "Najnizszy"},
       { value: "Low", text: "Niski"},
       { value: "Normal", text: "Normalny"},
       { value: "High", text: "Wysoki"},
-      { value: "Highest", text: "Najwyzszy"}
-  ]
+    ],
+    comments: [
+      {
+        id:"0884e4cc-5a53-4397-bc3c-a92838e518a0",
+        taskId: "bb635416-e38f-4d84-bace-4445bb22780f",
+        date: "2021-03-28",
+        text: "Lotem ipsum"
+      },
+      { 
+        id: "090b7526-5047-4dd3-aab6-31bd8fc0009a",
+        taskId: "8105ec9e-498f-4c1b-b233-fcaa6bbe4357",
+        date: "2021-03-28",
+        text: "Lotem ipsum"
+      },
+      { 
+        id: "6963cdb9-2f61-4e11-8c6c-71d2d914641e",
+        taskId: "8105ec9e-498f-4c1b-b233-fcaa6bbe4357",
+        date: "2021-03-28",
+        text: "Lotem ipsum ś2"
+      }
+    ]
   },
 
   mutations: {
@@ -47,6 +73,10 @@ export default new Vuex.Store({
     UPDATE_TASK(state, updatedTask) {
       let task = state.tasks.find(task => task.id === updatedTask.id);
       task = updatedTask;
+    },
+    ADD_COMMENT(state, comment) {
+      console.log(state.comments)
+      state.comments.push(comment)
     },
   },
 
@@ -70,12 +100,21 @@ export default new Vuex.Store({
       commit
     }, task) {
       commit("UPDATE_TASK", task)
+    },
+    addComment({
+      commit
+    }, comment) {
+      commit("ADD_COMMENT", comment)
     }
   },
 
   getters: {
+    // tasks
     getCompletedTasks: state => state.tasks.filter((task) => task.completed),
     getPendingTasks: state => state.tasks.filter((task) => !task.completed),
-    getTaskById: state => id => state.tasks.find(task => task.id === id)
+    getTaskById: state => id => state.tasks.find(task => task.id === id),
+
+    // comments
+    getCommentsByTaskId: state => taskId => state.comments.filter(comment => comment.taskId === taskId)
   }
 })
